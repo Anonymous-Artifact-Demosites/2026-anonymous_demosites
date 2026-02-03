@@ -1121,16 +1121,16 @@
                   </p>
                 </div>
                 <p style="margin-bottom: 30px;">
-                  Spotify is the world's largest music streaming platform with over 600 million users. Our analysis revealed a comprehensive breakdown in identity verification and account management. Attackers can preemptively register accounts without email verification, forcing victims into standard login flows where they must actively verify their email addresses to gain access to the attacker-pre-created accounts (T2). Attackers can then completely take over accounts through weak email change procedures (T3), establish persistent backdoors through opaque OAuth management (T5), and permanently lock victims out of their accounts through identifier hijacking (T7).
+                  Spotify is the world's largest music streaming platform with over 600 million users. Our analysis revealed a comprehensive breakdown in identity verification and account management. Attackers can preemptively register accounts without email verification and implicitly link them with victim identities (T1). Attackers can then completely take over accounts through weak email change procedures (T3), establish persistent backdoors through opaque OAuth management (T5), and permanently lock victims out of their accounts through identifier lockout (T7).
                 </p>
                 
-                <!-- Problem 4.1: T2 -->
+                <!-- Problem 4.1: T1 -->
                 <div style="margin-top: 30px; padding: 20px; background-color: #ffffff; border-radius: 8px; border: 1px solid #e0e0e0;">
-                  <h3 class="title is-4" id="T2-Spotify">T2: Verification Hijacking via Registration Preemption</h3>
+                  <h3 class="title is-4" id="T1-Spotify">T1: Implicit Pre-hijacking of First-party Accounts</h3>
                   
                   <h4 class="title is-5" style="margin-top: 20px;">Demonstration</h4>
                   <p style="margin-bottom: 20px;">
-                    Spotify's registration system allows attackers to create accounts without email verification, effectively preempting legitimate user registration. This attack corresponds to <strong>T2</strong> and stems from <strong>Q1</strong> (accounts created without email verification) and <strong>Q3</strong> (ambiguous account state that blocks subsequent registration attempts). When the legitimate user attempts to register or use Google OAuth, they are forced into a compromised authentication flow that grants access to the attacker-pre-created account.
+                    Spotify's registration system allows attackers to create accounts without email verification, effectively preempting legitimate user registration. This attack corresponds to <strong>T1</strong> and stems from <strong>Q1</strong> (Missing Verification) and <strong>Q4</strong> (Implicit Account Linking). When the legitimate user attempts to register or use Google OAuth, they are forced into a compromised authentication flow that implicitly links their identity to the attacker-pre-created account.
                   </p>
                   
                   <div style="margin: 20px 0; padding: 20px; background-color: #fff3cd; border-left: 4px solid #ffc107; border-radius: 4px;">
@@ -1161,11 +1161,11 @@
                   </div>
 
                   <div style="text-align: center; margin: 30px 0;">
-                    <img src="./static/images/question/Spotify - T2.png" alt="Spotify T2 Demonstration Screenshot" class="zoomable" style="max-width: 100%; height: auto; border: 1px solid #ddd; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); margin-bottom: 20px;">
+                    <img src="./static/images/question/Spotify - T2.png" alt="Spotify T1 Demonstration Screenshot" class="zoomable" style="max-width: 100%; height: auto; border: 1px solid #ddd; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); margin-bottom: 20px;">
                     <p style="font-style: italic; margin-top: 10px; color: #666; margin-bottom: 20px;">
                       Figure: When the victim attempts to register using their own email address after the attacker's preemptive registration, Spotify displays an error message indicating that the email address is already associated with an existing account.
                     </p>
-                    <img src="./static/images/question/Spotify - T2（2）.png" alt="Spotify T2 Second Screenshot" class="zoomable" style="max-width: 100%; height: auto; border: 1px solid #ddd; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                    <img src="./static/images/question/Spotify - T2（2）.png" alt="Spotify T1 Second Screenshot" class="zoomable" style="max-width: 100%; height: auto; border: 1px solid #ddd; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
                     <p style="font-style: italic; margin-top: 10px; color: #666;">
                       Figure: The compromised authentication flow that forces victims into the attacker-pre-created account.
                     </p>
@@ -1188,7 +1188,7 @@
                     <div>
                       <h6 style="font-weight: bold; margin-bottom: 10px; color: #721c24;">Gateway to Escalation:</h6>
                       <p style="margin-bottom: 0; line-height: 1.8;">
-                        This initial foothold enables attackers to execute more severe attacks like T3 (Total Takeover), T5 (Backdoor Planting), or T7 (Account Lockout).
+                        This initial foothold enables attackers to execute more severe attacks like T3 (Account Takeover) or T5 (Backdoor Planting).
                       </p>
                     </div>
                   </div>
@@ -1200,14 +1200,14 @@
                   
                   <h4 class="title is-5" style="margin-top: 20px;">Demonstration</h4>
                   <p style="margin-bottom: 20px;">
-                    Once an attacker has access to a Spotify account (for example, through T2), they can permanently seize ownership by changing the primary email address. This attack corresponds to <strong>T3</strong> and exploits <strong>Q5</strong>: the platform only requires the current password and never verifies or notifies the original email address. The email change process does not send verification codes to either the old or new email—only password confirmation is required.
+                    Once an attacker has access to a Spotify account (for example, through T1), they can permanently seize ownership by changing the primary email address. This attack corresponds to <strong>T3</strong> and exploits <strong>Q5</strong>: the platform only requires the current password and never verifies or notifies the original email address. The email change process does not send verification codes to either the old or new email—only password confirmation is required.
                   </p>
 
                   <div style="margin: 20px 0; padding: 20px; background-color: #fff3cd; border-left: 4px solid #ffc107; border-radius: 4px;">
                     <h5 style="font-size: 1.1em; font-weight: bold; margin-bottom: 15px; color: #856404;">Attack Process:</h5>
                     <ol style="margin-left: 20px; padding-left: 10px; line-height: 1.8;">
                       <li style="margin-bottom: 8px;">
-                        While logged into the compromised account (established via T2), the attacker navigates to <strong>Account Settings &gt; Email</strong>.
+                        While logged into the compromised account (established via T1), the attacker navigates to <strong>Account Settings &gt; Email</strong>.
                       </li>
                       <li style="margin-bottom: 8px;">
                         The attacker enters a new attacker-controlled email address: <code style="background-color: #f5f5f5; padding: 2px 6px; border-radius: 3px; font-family: monospace;">attacker@gmail.com</code>.
@@ -1272,7 +1272,7 @@
                     <h5 style="font-size: 1.1em; font-weight: bold; margin-bottom: 15px; color: #856404;">Attack Process:</h5>
                     <ol style="margin-left: 20px; padding-left: 10px; line-height: 1.8;">
                       <li style="margin-bottom: 8px;">
-                        While authenticated in the compromised account (via T2), the attacker navigates to <strong>Account Settings &gt; Connected Apps</strong> or similar OAuth management page.
+                        While authenticated in the compromised account (via T1), the attacker navigates to <strong>Account Settings &gt; Connected Apps</strong> or similar OAuth management page.
                       </li>
                       <li style="margin-bottom: 8px;">
                         The attacker clicks <strong>"Connect Google"</strong> or <strong>"Connect Facebook"</strong> and selects an attacker-controlled account to link.
@@ -1338,14 +1338,14 @@
                   
                   <h4 class="title is-5" style="margin-top: 20px;">Demonstration</h4>
                   <p style="margin-bottom: 20px;">
-                    In the most severe escalation, an attacker who has preemptively registered an account (T2) can permanently lock the legitimate user out by changing the email address to a different attacker-controlled address. This attack corresponds to <strong>T7</strong> and exploits the combination of <strong>Q1</strong> (unverified registration), <strong>Q5</strong> (one-way email changes), and <strong>Q3</strong> (ambiguous account state). After the email change, the victim's email address enters a state where it cannot be used for login, registration, or Google OAuth, effectively creating a permanent denial of service.
+                    In the most severe escalation, an attacker who has preemptively registered an account (T1) can permanently lock the legitimate user out by changing the email address to a different attacker-controlled address. This attack corresponds to <strong>T7</strong> and exploits <strong>Q3</strong> (Premature Identifier Lock). After the email change, the victim's email address enters a state where it cannot be used for login, registration, or Google OAuth, effectively creating a permanent denial of service.
                   </p>
 
                   <div style="margin: 20px 0; padding: 20px; background-color: #fff3cd; border-left: 4px solid #ffc107; border-radius: 4px;">
                     <h5 style="font-size: 1.1em; font-weight: bold; margin-bottom: 15px; color: #856404;">Attack Escalation:</h5>
                     <ol style="margin-left: 20px; padding-left: 10px; line-height: 1.8;">
                       <li style="margin-bottom: 8px;">
-                        The attacker has already pre-created an account with the victim's email via T2, establishing initial access.
+                        The attacker has already pre-created an account with the victim's email via T1, establishing initial access.
                       </li>
                       <li style="margin-bottom: 8px;">
                         Using the password from the pre-registration phase, the attacker logs into the account and navigates to email settings.
